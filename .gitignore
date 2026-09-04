@@ -48,3 +48,5 @@ out.txt
 flamegraph*.svg
 *.tmp.scm
 work[0-9]/
+.qmlls.ini
+result

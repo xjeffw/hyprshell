@@ -1,5 +1,5 @@
 {
-  description = "generic flake.nix project base";
+  description = "A Catppuccin desktop shell for Hyprland, built with Quickshell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -34,20 +34,51 @@
         let
           overlays = [ ];
           pkgs = import inputs.nixpkgs { inherit system overlays; };
-          pkgs-stable = import inputs.nixpkgs-stable { inherit system overlays; };
-          repoRoot = ./.;
-          lib = pkgs.lib;
+          worktreeSafeSource = builtins.path {
+            path = ./.;
+            name = "hyprshell-source";
+            filter = path: _type: baseNameOf path != ".git";
+          };
+          hyprshell = pkgs.writeShellApplication {
+            name = "hyprshell";
+            runtimeInputs = with pkgs; [
+              bash
+              coreutils
+              gawk
+              quickshell
+            ];
+            text = ''
+              export QT_QPA_PLATFORM=wayland
+              exec quickshell --path ${./quickshell} "$@"
+            '';
+          };
         in
         {
+          apps.default = {
+            type = "app";
+            program = "${hyprshell}/bin/hyprshell";
+            meta.description = "Launch the Hyprshell Quickshell configuration";
+          };
+
+          packages = {
+            hyprshell = hyprshell;
+            default = hyprshell;
+          };
+
           pre-commit = {
             settings = {
               enable = true;
+              # Linked worktrees contain a .git pointer whose target is not
+              # available in Nix build sandboxes. Let the check initialize its
+              # own repository instead.
+              rootSrc = pkgs.lib.mkForce worktreeSafeSource;
               install.enable = true;
               hooks.treefmt.enable = true;
             };
           };
 
           treefmt = {
+            projectRoot = pkgs.lib.mkForce worktreeSafeSource;
             projectRootFile = "flake.nix";
             programs.mdformat.enable = true;
             programs.nixfmt.enable = true;
@@ -72,9 +103,12 @@
                 openssl.dev
                 pkg-config
                 pre-commit
+                quickshell
                 ripgrep
                 shellcheck
                 shfmt
+                qt6.qtdeclarative
+                libnotify
               ]
             );
             shellHook = ''
@@ -82,6 +116,7 @@
               export SHELL="${pkgs.bashInteractive}/bin/bash"
               export EDITOR="rly"
               export VISUAL="rly"
+              export QT_QPA_PLATFORM="wayland"
               ${config.pre-commit.settings.installationScript}
             '';
           };
