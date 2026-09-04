@@ -1,31 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Services.Mpris
 
 BarSection {
     id: root
 
-    readonly property var players: Mpris.players.values
-    property var selectedPlayer: null
-    readonly property var player: {
-        if (selectedPlayer !== null && players.indexOf(selectedPlayer) >= 0)
-            return selectedPlayer;
-        for (let i = 0; i < players.length; i++) {
-            if (players[i].isPlaying)
-                return players[i];
-        }
-        return players.length > 0 ? players[0] : null;
-    }
+    required property var manager
+    readonly property var player: manager.player
 
     visible: player !== null
     interactive: true
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     tooltipText: player === null ? "" : player.identity + " — left click: play/pause; right click: next player; scroll: seek"
-
-    onPlayersChanged: {
-        if (selectedPlayer !== null && players.indexOf(selectedPlayer) < 0)
-            selectedPlayer = null;
-    }
 
     Text {
         text: root.player !== null && root.player.isPlaying ? "▶" : "Ⅱ"
@@ -52,16 +37,13 @@ BarSection {
     onClicked: mouse => {
         if (root.player === null)
             return;
-        if (mouse.button === Qt.LeftButton && root.player.canTogglePlaying)
-            root.player.togglePlaying();
-        else if (mouse.button === Qt.RightButton && root.players.length > 0) {
-            const currentIndex = Math.max(0, root.players.indexOf(root.player));
-            root.selectedPlayer = root.players[(currentIndex + 1) % root.players.length];
-        }
+        if (mouse.button === Qt.LeftButton)
+            root.manager.playPause();
+        else if (mouse.button === Qt.RightButton)
+            root.manager.selectNextPlayer();
     }
 
     onWheel: wheel => {
-        if (root.player !== null && root.player.canSeek)
-            root.player.seek(wheel.angleDelta.y > 0 ? -10 : 10);
+        root.manager.seekDelta(wheel.angleDelta.y > 0 ? -10 : 10);
     }
 }

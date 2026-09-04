@@ -47,3 +47,29 @@ exec-once = nix run /absolute/path/to/hyprshell#hyprshell
 Workspace buttons switch with left click. Media uses left click for play/pause,
 right click to cycle players, and the scroll wheel to seek. The volume section
 toggles mute on click and changes volume with the scroll wheel.
+
+## Hyprland media bindings
+
+The running shell exposes the same media requests as the previous AGS bar. If
+the `hyprshell` package is installed in your user or system profile, the
+existing bindings can be changed by replacing `ags` with `hyprshell`:
+
+```ini
+bind = SUPER CONTROL, up, exec, hyprshell request 'playPause'
+bind = SUPER CONTROL, down, exec, hyprshell request 'selectNextPlayer'
+bind = SUPER CONTROL, left, exec, hyprshell request 'previousTrack'
+bind = SUPER CONTROL, right, exec, hyprshell request 'nextTrack'
+bind = SUPER CONTROL SHIFT, left, exec, hyprshell request 'seekDelta -10'
+bind = SUPER CONTROL SHIFT, right, exec, hyprshell request 'seekDelta 10'
+```
+
+These map to the native Quickshell IPC target and can also be invoked directly:
+
+```sh
+hyprshell ipc call mpris playPause
+hyprshell ipc call mpris selectNextPlayer
+hyprshell ipc call mpris previousTrack
+hyprshell ipc call mpris nextTrack
+hyprshell ipc call mpris seekDelta -10
+hyprshell ipc call mpris seekDelta 10
+```

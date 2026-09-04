@@ -10,6 +10,10 @@ ShellRoot {
         id: systemStats
     }
 
+    MediaManager {
+        id: mprisManager
+    }
+
     // PipeWire properties are lazy. Track the current sink once here so every
     // monitor can share the populated audio object.
     PwObjectTracker {
@@ -20,6 +24,7 @@ ShellRoot {
         model: Quickshell.screens
 
         delegate: Bar {
+            mediaManager: mprisManager
             stats: systemStats
         }
     }

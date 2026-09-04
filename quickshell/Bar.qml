@@ -6,6 +6,7 @@ PanelWindow {
     id: root
 
     required property var modelData
+    required property var mediaManager
     required property var stats
 
     screen: modelData
@@ -50,7 +51,9 @@ PanelWindow {
             Layout.fillWidth: true
         }
 
-        Media {}
+        Media {
+            manager: root.mediaManager
+        }
 
         Tray {
             hostWindow: root

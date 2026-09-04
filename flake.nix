@@ -49,6 +49,43 @@
             ];
             text = ''
               export QT_QPA_PLATFORM=wayland
+
+              if (( $# > 0 )) && [[ $1 == request ]]; then
+                shift
+                if (( $# == 1 )); then
+                  read -r -a request_words <<< "$1"
+                  set -- "''${request_words[@]}"
+                fi
+
+                if (( $# == 0 )); then
+                  echo "usage: hyprshell request <playPause|selectNextPlayer|nextTrack|previousTrack|seekDelta [seconds]>" >&2
+                  exit 2
+                fi
+
+                request=$1
+                shift
+                case "$request" in
+                  playPause | selectNextPlayer | nextTrack | previousTrack)
+                    if (( $# != 0 )); then
+                      echo "hyprshell request: $request does not accept arguments" >&2
+                      exit 2
+                    fi
+                    exec quickshell --path ${./quickshell} ipc call mpris "$request"
+                    ;;
+                  seekDelta)
+                    if (( $# != 1 )); then
+                      echo "hyprshell request: seekDelta requires one numeric seconds argument" >&2
+                      exit 2
+                    fi
+                    exec quickshell --path ${./quickshell} ipc call mpris seekDelta "$1"
+                    ;;
+                  *)
+                    echo "hyprshell request: unknown command: $request" >&2
+                    exit 2
+                    ;;
+                esac
+              fi
+
               exec quickshell --path ${./quickshell} "$@"
             '';
           };
