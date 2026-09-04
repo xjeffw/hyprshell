@@ -4,22 +4,41 @@ import QtQuick
 import Quickshell
 
 Singleton {
-    // Catppuccin Mocha: https://catppuccin.com/palette/
-    readonly property color rosewater: "#f5e0dc"
-    readonly property color red: "#f38ba8"
-    readonly property color peach: "#fab387"
-    readonly property color yellow: "#f9e2af"
-    readonly property color green: "#a6e3a1"
-    readonly property color teal: "#94e2d5"
-    readonly property color blue: "#89b4fa"
-    readonly property color mauve: "#cba6f7"
-    readonly property color text: "#cdd6f4"
-    readonly property color subtext0: "#a6adc8"
-    readonly property color overlay0: "#6c7086"
-    readonly property color surface0: "#313244"
-    readonly property color surface1: "#45475a"
-    readonly property color mantle: "#181825"
-    readonly property color base: "#1e1e2e"
+    readonly property string defaultColorTheme: "macchiato"
+    readonly property string colorTheme: {
+        const configuredTheme = Quickshell.env("HYPRSHELL_THEME");
+
+        if (configuredTheme === null || configuredTheme.trim() === "")
+            return defaultColorTheme;
+
+        const normalizedTheme = configuredTheme.trim().toLowerCase();
+        if (normalizedTheme !== "macchiato" && normalizedTheme !== "mocha") {
+            console.warn(`Unknown HYPRSHELL_THEME '${configuredTheme}'; using '${defaultColorTheme}'`);
+            return defaultColorTheme;
+        }
+
+        return normalizedTheme;
+    }
+
+    readonly property QtObject palette: colorTheme === "mocha" ? mocha : macchiato
+    readonly property QtObject macchiato: CatppuccinMacchiato {}
+    readonly property QtObject mocha: CatppuccinMocha {}
+
+    readonly property color rosewater: palette.rosewater
+    readonly property color red: palette.red
+    readonly property color peach: palette.peach
+    readonly property color yellow: palette.yellow
+    readonly property color green: palette.green
+    readonly property color teal: palette.teal
+    readonly property color blue: palette.blue
+    readonly property color mauve: palette.mauve
+    readonly property color text: palette.text
+    readonly property color subtext0: palette.subtext0
+    readonly property color overlay0: palette.overlay0
+    readonly property color surface0: palette.surface0
+    readonly property color surface1: palette.surface1
+    readonly property color mantle: palette.mantle
+    readonly property color base: palette.base
 
     readonly property int barHeight: 38
     readonly property int controlHeight: 28
