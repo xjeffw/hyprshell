@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 
 Singleton {
-    readonly property string defaultColorTheme: "macchiato"
+    readonly property string defaultColorTheme: "mocha"
     readonly property string colorTheme: {
         const configuredTheme = Quickshell.env("HYPRSHELL_THEME");
 
@@ -12,7 +12,7 @@ Singleton {
             return defaultColorTheme;
 
         const normalizedTheme = configuredTheme.trim().toLowerCase();
-        if (normalizedTheme !== "macchiato" && normalizedTheme !== "mocha") {
+        if (normalizedTheme !== "frappe" && normalizedTheme !== "macchiato" && normalizedTheme !== "mocha") {
             console.warn(`Unknown HYPRSHELL_THEME '${configuredTheme}'; using '${defaultColorTheme}'`);
             return defaultColorTheme;
         }
@@ -20,7 +20,8 @@ Singleton {
         return normalizedTheme;
     }
 
-    readonly property QtObject palette: colorTheme === "mocha" ? mocha : macchiato
+    readonly property QtObject palette: colorTheme === "frappe" ? frappe : colorTheme === "macchiato" ? macchiato : mocha
+    readonly property QtObject frappe: CatppuccinFrappe {}
     readonly property QtObject macchiato: CatppuccinMacchiato {}
     readonly property QtObject mocha: CatppuccinMocha {}
 

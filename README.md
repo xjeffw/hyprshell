@@ -2,7 +2,7 @@
 
 A compact, multi-monitor Hyprland top bar built with Quickshell 0.3. Its layout
 follows the supplied AGS reference bar while using simple Qt Quick components
-and the Catppuccin Macchiato palette by default.
+and the Catppuccin Mocha palette by default.
 
 The bar provides:
 
@@ -53,21 +53,21 @@ exec-once = nix run /absolute/path/to/hyprshell#hyprshell
 
 ## Color theme
 
-Hyprshell includes Catppuccin Macchiato (the default) and Catppuccin Mocha.
+Hyprshell includes Catppuccin Mocha (the default), Macchiato, and Frappé.
 Set `HYPRSHELL_THEME` when starting the shell to select a theme:
 
 ```sh
-HYPRSHELL_THEME=mocha nix run .#hyprshell
+HYPRSHELL_THEME=macchiato nix run .#hyprshell
 ```
 
 The same setting works when running Quickshell directly:
 
 ```sh
-HYPRSHELL_THEME=mocha quickshell --path ./quickshell
+HYPRSHELL_THEME=macchiato quickshell --path ./quickshell
 ```
 
-Supported values are `macchiato` and `mocha`. Theme names are
-case-insensitive, and an unsupported value falls back to Macchiato.
+Supported values are `frappe`, `macchiato`, and `mocha`. Theme names are
+case-insensitive, and an unsupported value falls back to Mocha.
 
 Workspace buttons switch with left click. Media uses left click for play/pause,
 right click to cycle players, and the scroll wheel to seek. The volume section
