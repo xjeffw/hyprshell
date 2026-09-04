@@ -23,6 +23,6 @@ BarSection {
         color: Theme.text
         font.family: Theme.monoFontFamily
         font.pixelSize: 12
-        font.bold: true
+        font.weight: Theme.monoBoldFontWeight
     }
 }

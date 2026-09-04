@@ -45,4 +45,6 @@ Singleton {
     readonly property int radius: 7
     readonly property string fontFamily: "sans-serif"
     readonly property string monoFontFamily: "monospace"
+    readonly property int monoFontWeight: Math.min(Font.Black, Font.Normal + 200)
+    readonly property int monoBoldFontWeight: Math.min(Font.Black, Font.Bold + 200)
 }

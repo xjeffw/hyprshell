@@ -23,7 +23,7 @@ RowLayout {
             color: Theme.text
             font.family: Theme.monoFontFamily
             font.pixelSize: 12
-            font.bold: true
+            font.weight: Theme.monoBoldFontWeight
         }
 
         Text {
@@ -32,6 +32,7 @@ RowLayout {
             color: Theme.subtext0
             font.family: Theme.monoFontFamily
             font.pixelSize: 12
+            font.weight: Theme.monoFontWeight
         }
 
         Text {
@@ -40,6 +41,7 @@ RowLayout {
             color: Theme.subtext0
             font.family: Theme.monoFontFamily
             font.pixelSize: 12
+            font.weight: Theme.monoFontWeight
         }
     }
 
@@ -59,7 +61,7 @@ RowLayout {
             color: Theme.text
             font.family: Theme.monoFontFamily
             font.pixelSize: 12
-            font.bold: true
+            font.weight: Theme.monoBoldFontWeight
         }
     }
 }
