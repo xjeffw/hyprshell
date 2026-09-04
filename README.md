@@ -10,7 +10,8 @@ The bar provides:
 - MPRIS media status and play/pause, player cycling, and seeking controls;
 - system tray items with activation, menus, and scrolling;
 - shared CPU, temperature, frequency, and memory statistics;
-- PipeWire output volume and optional UPower battery status;
+- optional UPower battery level and charging state, shown as an icon;
+- PipeWire output volume;
 - date and time; and
 - a notification daemon with a top-right popup and action buttons.
 
