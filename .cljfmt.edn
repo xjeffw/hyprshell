@@ -1,0 +1,7 @@
+; https://tonsky.me/blog/clojurefmt/
+{:indents {#re "^(?!ns$).*" [[:inner 0]]
+           ns [[:inner 0]]}
+ :parallel? true
+ :paths ["lib"]
+ :remove-multiple-non-indenting-spaces? true
+ :sort-ns-references? false}

@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $file = shift or die "Usage: $0 <lisp-file>\n";
+open(my $fh, '<', $file) or die "Cannot open $file: $!\n";
+
+my $balance = 0;
+my $in_string = 0;
+my $escaped = 0;
+my $in_comment = 0;
+
+my $line_num = 0;
+while (my $line = <$fh>) {
+    $line_num++;
+    my $len = length($line);
+    for (my $i = 0; $i < $len; $i++) {
+        my $char = substr($line, $i, 1);
+        
+        if ($in_comment) {
+            if ($char eq "\n") {
+                $in_comment = 0;
+            }
+            next;
+        }
+        
+        if ($in_string) {
+            if ($escaped) {
+                $escaped = 0;
+            } elsif ($char eq '\\') {
+                $escaped = 1;
+            } elsif ($char eq '"') {
+                $in_string = 0;
+            }
+            next;
+        }
+        
+        if ($char eq '\\') {
+            $i++;
+            next;
+        }
+        
+        if ($char eq ';') {
+            my $prev_char = $i > 0 ? substr($line, $i - 1, 1) : '';
+            if ($prev_char ne '\\') {
+                $in_comment = 1;
+                next;
+            }
+        }
+        
+        if ($char eq '"') {
+            $in_string = 1;
+            next;
+        }
+        
+        if ($char eq '(') {
+            $balance++;
+        } elsif ($char eq ')') {
+            $balance--;
+        }
+    }
+    
+    printf "%4d: %s", $balance, $line;
+}
+close($fh);
