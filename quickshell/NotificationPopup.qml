@@ -16,8 +16,8 @@ PanelWindow {
     function restartTimeout() {
         if (notification === null)
             return;
-        const requested = notification.expireTimeout * 1000;
-        hideTimer.interval = requested > 0 ? requested : 6000;
+        const requested = notification.expireTimeout;
+        hideTimer.interval = requested > 0 ? requested : 5000;
         hideTimer.restart();
     }
 
@@ -41,7 +41,7 @@ PanelWindow {
     Timer {
         id: hideTimer
 
-        interval: 6000
+        interval: 5000
         repeat: false
         onTriggered: root.expireRequested()
     }
@@ -63,6 +63,12 @@ PanelWindow {
         color: Theme.base
         border.width: 1
         border.color: root.notification !== null && root.notification.urgency === NotificationUrgency.Critical ? Theme.red : Theme.surface1
+
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.dismissRequested()
+        }
 
         RowLayout {
             id: notificationContent
@@ -108,7 +114,7 @@ PanelWindow {
                     Layout.fillWidth: true
                     visible: text.length > 0
                     text: root.notification !== null ? root.notification.body : ""
-                    textFormat: Text.PlainText
+                    textFormat: Text.StyledText
                     color: Theme.subtext0
                     wrapMode: Text.Wrap
                     maximumLineCount: 4
@@ -138,13 +144,6 @@ PanelWindow {
                         }
                     }
                 }
-            }
-
-            ToolButton {
-                Layout.alignment: Qt.AlignTop
-                text: "×"
-                palette.buttonText: Theme.text
-                onClicked: root.dismissRequested()
             }
         }
     }

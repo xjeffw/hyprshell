@@ -44,7 +44,7 @@ Scope {
     NotificationServer {
         keepOnReload: false
         bodySupported: true
-        bodyMarkupSupported: false
+        bodyMarkupSupported: true
         actionsSupported: true
         imageSupported: true
         onNotification: notification => root.receive(notification)

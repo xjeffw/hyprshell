@@ -37,6 +37,9 @@ You can test the popup from the development shell with:
 notify-send "Hyprshell" "Notifications are working"
 ```
 
+Notifications use supported body markup, close when clicked, and fall back to a
+five-second duration when the sender does not provide one.
+
 For Hyprland autostart, use the packaged command with an absolute repository
 path, for example:
 
