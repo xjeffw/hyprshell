@@ -14,6 +14,10 @@ The bar provides:
 - date and time; and
 - a notification daemon with a top-right popup and action buttons.
 
+User-facing options live in `quickshell/Config.qml`. Set `transparentBar` to
+`true` to remove the bar's full-width background and bottom border; it defaults
+to the solid Catppuccin background.
+
 ## Run it
 
 Enter the development shell and start Quickshell against the repository config:

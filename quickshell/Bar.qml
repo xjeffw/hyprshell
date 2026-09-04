@@ -10,7 +10,7 @@ PanelWindow {
     required property var stats
 
     screen: modelData
-    color: "transparent"
+    color: Config.transparentBar ? "transparent" : Theme.mantle
     implicitHeight: Theme.barHeight
     exclusiveZone: Theme.barHeight
 
@@ -18,6 +18,20 @@ PanelWindow {
         top: true
         left: true
         right: true
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        visible: !Config.transparentBar
+        color: Theme.mantle
+
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 1
+            color: Theme.surface1
+        }
     }
 
     RowLayout {
