@@ -64,7 +64,9 @@ PanelWindow {
             stats: root.stats
         }
 
-        Battery {}
+        Battery {
+            stats: root.stats
+        }
 
         Audio {}
 

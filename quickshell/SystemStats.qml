@@ -11,6 +11,9 @@ Scope {
     property real memoryPercent: 0
     property real memoryUsed: 0
     property real memoryTotal: 0
+    property bool batteryAvailable: false
+    property int batteryPercent: 0
+    property string batteryStatus: "Unknown"
 
     function update(output) {
         try {
@@ -21,6 +24,9 @@ Scope {
             memoryPercent = data.memory_percent || 0;
             memoryUsed = data.memory_used || 0;
             memoryTotal = data.memory_total || 0;
+            batteryAvailable = data.battery_present === 1;
+            batteryPercent = data.battery_percent || 0;
+            batteryStatus = data.battery_status || "Unknown";
         } catch (error) {
             console.warn("Unable to parse system statistics:", error);
         }

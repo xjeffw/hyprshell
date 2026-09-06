@@ -6,12 +6,14 @@ import Quickshell.Services.UPower
 BarSection {
     id: root
 
+    required property var stats
     readonly property var battery: UPower.displayDevice
-    readonly property bool available: battery !== null && battery.ready && battery.isPresent && battery.isLaptopBattery
+    readonly property bool hasUPower: battery !== null && battery.ready && battery.isPresent && battery.isLaptopBattery
+    readonly property bool available: hasUPower || stats.batteryAvailable
     // UPower percentages are reported from 0 to 1.
-    readonly property int percent: available ? Math.round(battery.percentage * 100) : 0
-    readonly property bool charging: available && (battery.state === UPowerDeviceState.Charging || battery.state === UPowerDeviceState.PendingCharge)
-    readonly property bool fullyCharged: available && battery.state === UPowerDeviceState.FullyCharged
+    readonly property int percent: hasUPower ? Math.round(battery.percentage * 100) : stats.batteryPercent
+    readonly property bool charging: available && (hasUPower ? battery.state === UPowerDeviceState.Charging || battery.state === UPowerDeviceState.PendingCharge : stats.batteryStatus === "Charging")
+    readonly property bool fullyCharged: available && (hasUPower ? battery.state === UPowerDeviceState.FullyCharged : stats.batteryStatus === "Full")
     readonly property color levelColor: charging || fullyCharged ? Theme.green : percent <= 15 ? Theme.red : percent <= 30 ? Theme.yellow : Theme.green
 
     visible: available
@@ -23,6 +25,8 @@ BarSection {
 
         if (fullyCharged)
             return prefix + " — fully charged";
+        if (!hasUPower)
+            return prefix + " — " + stats.batteryStatus.toLowerCase();
         if (charging)
             return battery.timeToFull > 0 ? prefix + " — charging, " + formatDuration(battery.timeToFull) + " until full" : prefix + " — charging";
         if (battery.timeToEmpty > 0)

@@ -74,6 +74,40 @@ if ((frequency_count > 0)); then
   cpu_frequency_khz=$((cpu_frequency_khz / frequency_count))
 fi
 
+# UPower is optional. Read system batteries directly when its service is absent.
+# Match by type rather than name (Apple Silicon uses macsmc-battery, not BAT0).
+battery_present=0
+battery_percent=0
+battery_status=Unknown
+for supply in /sys/class/power_supply/*; do
+  [[ -r $supply/type ]] || continue
+  supply_type=$(<"$supply/type") 2>/dev/null || continue
+  [[ $supply_type == Battery ]] || continue
+  if [[ -r $supply/scope ]]; then
+    supply_scope=$(<"$supply/scope") 2>/dev/null || continue
+    [[ $supply_scope != Device ]] || continue
+  fi
+  if [[ -r $supply/present ]]; then
+    supply_present=$(<"$supply/present") 2>/dev/null || continue
+    [[ $supply_present == 1 ]] || continue
+  fi
+  [[ -r $supply/capacity ]] || continue
+  capacity=$(<"$supply/capacity") 2>/dev/null || continue
+  [[ $capacity =~ ^[0-9]+$ ]] || continue
+  capacity=$((10#$capacity))
+  ((capacity <= 100)) || continue
+
+  battery_present=1
+  battery_percent=$capacity
+  if [[ -r $supply/status ]]; then
+    status=$(<"$supply/status") 2>/dev/null || status=Unknown
+    case "$status" in
+    Charging | Discharging | Full | 'Not charging') battery_status=$status ;;
+    esac
+  fi
+  break
+done
+
 awk \
   -v idle_delta="$idle_delta" \
   -v total_delta="$total_delta" \
@@ -81,8 +115,11 @@ awk \
   -v memory_used_kib="$memory_used_kib" \
   -v cpu_temp_millidegrees="$cpu_temp_millidegrees" \
   -v cpu_frequency_khz="$cpu_frequency_khz" \
+  -v battery_present="$battery_present" \
+  -v battery_percent="$battery_percent" \
+  -v battery_status="$battery_status" \
   'BEGIN {
     cpu_percent = total_delta > 0 ? (total_delta - idle_delta) * 100 / total_delta : 0
     memory_percent = memory_total_kib > 0 ? memory_used_kib * 100 / memory_total_kib : 0
-    printf "{\"cpu_percent\":%.1f,\"cpu_temp\":%.1f,\"cpu_frequency\":%.2f,\"memory_percent\":%.1f,\"memory_used\":%.2f,\"memory_total\":%.2f}\n", cpu_percent, cpu_temp_millidegrees / 1000, cpu_frequency_khz / 1000000, memory_percent, memory_used_kib / 1048576, memory_total_kib / 1048576
+    printf "{\"cpu_percent\":%.1f,\"cpu_temp\":%.1f,\"cpu_frequency\":%.2f,\"memory_percent\":%.1f,\"memory_used\":%.2f,\"memory_total\":%.2f,\"battery_present\":%d,\"battery_percent\":%d,\"battery_status\":\"%s\"}\n", cpu_percent, cpu_temp_millidegrees / 1000, cpu_frequency_khz / 1000000, memory_percent, memory_used_kib / 1048576, memory_total_kib / 1048576, battery_present, battery_percent, battery_status
   }'
