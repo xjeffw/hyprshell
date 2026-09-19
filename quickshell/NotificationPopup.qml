@@ -96,7 +96,7 @@ PanelWindow {
                     color: Theme.mauve
                     elide: Text.ElideRight
                     font.family: Theme.fontFamily
-                    font.pixelSize: 11
+                    font.pixelSize: 13
                     font.bold: true
                 }
 
@@ -106,7 +106,7 @@ PanelWindow {
                     color: Theme.text
                     elide: Text.ElideRight
                     font.family: Theme.fontFamily
-                    font.pixelSize: 14
+                    font.pixelSize: 16
                     font.bold: true
                 }
 
@@ -120,7 +120,7 @@ PanelWindow {
                     maximumLineCount: 4
                     elide: Text.ElideRight
                     font.family: Theme.fontFamily
-                    font.pixelSize: 12
+                    font.pixelSize: 14
                 }
 
                 RowLayout {
@@ -135,6 +135,8 @@ PanelWindow {
                             required property var modelData
 
                             text: modelData.text
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 13
                             palette.button: Theme.surface0
                             palette.buttonText: Theme.text
                             onClicked: {
