@@ -17,9 +17,9 @@ Rectangle {
     implicitWidth: contentRow.implicitWidth + horizontalPadding * 2
     implicitHeight: Theme.controlHeight
     radius: Theme.radius
-    color: Theme.surface0
+    color: Theme.sectionBackground
     border.width: 1
-    border.color: Theme.surface1
+    border.color: Theme.sectionBorder
 
     RowLayout {
         id: contentRow

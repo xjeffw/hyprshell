@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -10,9 +11,13 @@ PanelWindow {
     required property var stats
 
     screen: modelData
-    color: Config.transparentBar ? "transparent" : Theme.mantle
+    // The Rectangle below draws the background; painting it here too would
+    // double up a translucent color.
+    color: "transparent"
     implicitHeight: Theme.barHeight
     exclusiveZone: Theme.barHeight
+    // Ask niri to blur the wallpaper behind the translucent bar.
+    BackgroundEffect.blurRegion: Niri.available && !Config.transparentBar ? blurRegion : null
 
     anchors {
         top: true
@@ -20,10 +25,18 @@ PanelWindow {
         right: true
     }
 
+    Region {
+        id: blurRegion
+
+        item: background
+    }
+
     Rectangle {
+        id: background
+
         anchors.fill: parent
         visible: !Config.transparentBar
-        color: Theme.mantle
+        color: Theme.barBackground
 
         Rectangle {
             anchors.left: parent.left

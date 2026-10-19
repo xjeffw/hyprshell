@@ -25,14 +25,15 @@ BarSection {
             Layout.preferredWidth: Math.max(24, label.implicitWidth + 12)
             Layout.preferredHeight: Theme.controlHeight - 6
             radius: 5
-            color: modelData.is_focused ? Theme.green : modelData.is_active ? Theme.surface1 : workspaceMouse.containsMouse ? Theme.surface1 : "transparent"
+            // Neutral white highlights to suit the translucent black niri bar.
+            color: modelData.is_focused ? Qt.rgba(1, 1, 1, 0.3) : modelData.is_active || workspaceMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.15) : "transparent"
 
             Text {
                 id: label
 
                 anchors.centerIn: parent
                 text: workspaceButton.modelData.name ?? workspaceButton.modelData.idx
-                color: workspaceButton.modelData.is_focused ? Theme.base : workspaceButton.modelData.is_urgent ? Theme.red : workspaceButton.modelData.is_active ? Theme.green : Theme.text
+                color: workspaceButton.modelData.is_focused ? "white" : workspaceButton.modelData.is_urgent ? Theme.red : Theme.text
                 font.family: Theme.monoFontFamily
                 font.pixelSize: 13
                 font.weight: Theme.monoBoldFontWeight

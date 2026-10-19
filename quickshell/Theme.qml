@@ -41,8 +41,14 @@ Singleton {
     readonly property color mantle: palette.mantle
     readonly property color base: palette.base
 
-    readonly property int barHeight: 38
-    readonly property int controlHeight: 28
+    // Under niri the bar and its sections are translucent black over the
+    // wallpaper, and more compact.
+    readonly property color barBackground: Niri.available ? Qt.rgba(0, 0, 0, 0.5) : mantle
+    readonly property color sectionBackground: Niri.available ? Qt.rgba(0, 0, 0, 0.5) : surface0
+    readonly property color sectionBorder: Niri.available ? Qt.lighter(surface1, 1.4) : surface1
+
+    readonly property int barHeight: Niri.available ? 32 : 38
+    readonly property int controlHeight: Niri.available ? 24 : 28
     readonly property int radius: 7
     readonly property string fontFamily: "sans-serif"
     readonly property string monoFontFamily: "monospace"
