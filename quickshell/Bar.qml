@@ -40,8 +40,24 @@ PanelWindow {
         anchors.rightMargin: 5
         spacing: 4
 
-        Workspaces {
-            screen: root.screen
+        Loader {
+            sourceComponent: Niri.available ? niriWorkspaces : hyprlandWorkspaces
+
+            Component {
+                id: niriWorkspaces
+
+                NiriWorkspaces {
+                    screen: root.screen
+                }
+            }
+
+            Component {
+                id: hyprlandWorkspaces
+
+                Workspaces {
+                    screen: root.screen
+                }
+            }
         }
 
         ActiveWindow {

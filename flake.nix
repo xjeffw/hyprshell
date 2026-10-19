@@ -1,5 +1,5 @@
 {
-  description = "A Catppuccin desktop shell for Hyprland, built with Quickshell";
+  description = "A Catppuccin desktop shell for Hyprland and niri, built with Quickshell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

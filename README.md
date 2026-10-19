@@ -1,12 +1,13 @@
 # Hyprshell
 
-A compact, multi-monitor Hyprland top bar built with Quickshell 0.3. Its layout
+A compact, multi-monitor top bar for Hyprland and niri built with Quickshell
+0.3. Its layout
 follows the supplied AGS reference bar while using simple Qt Quick components
 and the Catppuccin Mocha palette by default.
 
 The bar provides:
 
-- monitor-local Hyprland workspaces and the active window title;
+- monitor-local Hyprland or niri workspaces and the active window title;
 - MPRIS media status and play/pause, player cycling, and seeking controls;
 - system tray items with activation, menus, and scrolling;
 - shared CPU, temperature, frequency, and memory statistics;
@@ -52,6 +53,20 @@ path, for example:
 exec-once = nix run /absolute/path/to/hyprshell#hyprshell
 ```
 
+## niri
+
+Hyprshell uses niri when `NIRI_SOCKET` is set, which niri does for everything it
+starts (including systemd user services in a `niri-session`). Workspaces and the
+active window title then come from the niri IPC event stream instead of
+Hyprland. The bar lists the workspaces on its own output, labelled by name or
+index, and hides niri's trailing empty workspace unless it is active.
+
+For niri autostart, use `spawn-at-startup`:
+
+```kdl
+spawn-at-startup "nix" "run" "/absolute/path/to/hyprshell#hyprshell"
+```
+
 ## Color theme
 
 Hyprshell includes Catppuccin Mocha (the default), Macchiato, and Frappé.
@@ -74,7 +89,7 @@ Workspace buttons switch with left click. Media uses left click for play/pause,
 right click to cycle players, and the scroll wheel to seek. The volume section
 toggles mute on click and changes volume with the scroll wheel.
 
-## Hyprland media bindings
+## Media bindings
 
 The running shell exposes the same media requests as the previous AGS bar. If
 the `hyprshell` package is installed in your user or system profile, the
@@ -87,6 +102,15 @@ bind = SUPER CONTROL, left, exec, hyprshell request 'previousTrack'
 bind = SUPER CONTROL, right, exec, hyprshell request 'nextTrack'
 bind = SUPER CONTROL SHIFT, left, exec, hyprshell request 'seekDelta -10'
 bind = SUPER CONTROL SHIFT, right, exec, hyprshell request 'seekDelta 10'
+```
+
+The niri equivalents look like this:
+
+```kdl
+binds {
+    Super+Ctrl+Up { spawn "hyprshell" "request" "playPause"; }
+    Super+Ctrl+Shift+Left { spawn "hyprshell" "request" "seekDelta" "-10"; }
+}
 ```
 
 These map to the native Quickshell IPC target and can also be invoked directly:

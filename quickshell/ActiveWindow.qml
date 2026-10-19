@@ -6,14 +6,16 @@ BarSection {
     id: root
 
     required property var screen
-    readonly property var hyprMonitor: Hyprland.monitorFor(screen)
-    readonly property var toplevel: Hyprland.activeToplevel
-    readonly property bool belongsHere: toplevel !== null && toplevel.monitor === hyprMonitor
+    // Avoid touching the Hyprland singleton under niri; it would try to connect.
+    readonly property var hyprMonitor: Niri.available ? null : Hyprland.monitorFor(screen)
+    readonly property var toplevel: Niri.available ? Niri.focusedWindowOn(screen.name) : Hyprland.activeToplevel
+    readonly property bool belongsHere: toplevel !== null && (Niri.available || toplevel.monitor === hyprMonitor)
+    readonly property string title: belongsHere ? toplevel.title ?? "" : ""
     readonly property int titleMaximumWidth: Math.max(1000, Math.round(screen.width * 0.5))
 
-    visible: belongsHere && toplevel.title.length > 0
+    visible: title.length > 0
     Layout.maximumWidth: titleMaximumWidth + horizontalPadding * 2
-    tooltipText: visible ? toplevel.title : ""
+    tooltipText: title
 
     Text {
         text: "▣"
@@ -23,7 +25,7 @@ BarSection {
 
     Text {
         Layout.maximumWidth: root.titleMaximumWidth
-        text: root.belongsHere ? root.toplevel.title : ""
+        text: root.title
         color: Theme.text
         elide: Text.ElideRight
         font.family: Theme.fontFamily

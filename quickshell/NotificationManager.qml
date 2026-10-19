@@ -9,13 +9,18 @@ Scope {
     property var activeNotification: null
     property var targetScreen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
 
-    function focusedScreen() {
+    function focusedScreenName() {
+        if (Niri.available)
+            return Niri.focusedOutput;
         const monitor = Hyprland.focusedMonitor;
-        if (monitor !== null) {
-            for (let i = 0; i < Quickshell.screens.length; i++) {
-                if (Quickshell.screens[i].name === monitor.name)
-                    return Quickshell.screens[i];
-            }
+        return monitor !== null ? monitor.name : "";
+    }
+
+    function focusedScreen() {
+        const name = focusedScreenName();
+        for (let i = 0; i < Quickshell.screens.length; i++) {
+            if (Quickshell.screens[i].name === name)
+                return Quickshell.screens[i];
         }
         return Quickshell.screens.length > 0 ? Quickshell.screens[0] : null;
     }
