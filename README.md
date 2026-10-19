@@ -46,6 +46,17 @@ notify-send "Hyprshell" "Notifications are working"
 Notifications use supported body markup, close when clicked, and fall back to a
 five-second duration when the sender does not provide one.
 
+The packaged command runs its own copy of `quickshell/`. Set
+`HYPRSHELL_CONFIG_DIR` to run a checkout instead, so edits take effect without
+rebuilding (Quickshell reloads the config when its files change):
+
+```sh
+HYPRSHELL_CONFIG_DIR=~/code/hyprshell/quickshell hyprshell
+```
+
+`hyprshell request` uses the same variable to reach the running shell, so set it
+for both.
+
 For Hyprland autostart, use the packaged command with an absolute repository
 path, for example:
 

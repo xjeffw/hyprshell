@@ -50,6 +50,9 @@
             text = ''
               export QT_QPA_PLATFORM=wayland
 
+              # Run another copy of the config, e.g. a checkout being edited.
+              config_dir=''${HYPRSHELL_CONFIG_DIR:-${./quickshell}}
+
               if (( $# > 0 )) && [[ $1 == request ]]; then
                 shift
                 if (( $# == 1 )); then
@@ -70,14 +73,14 @@
                       echo "hyprshell request: $request does not accept arguments" >&2
                       exit 2
                     fi
-                    exec quickshell --path ${./quickshell} ipc call mpris "$request"
+                    exec quickshell --path "$config_dir" ipc call mpris "$request"
                     ;;
                   seekDelta)
                     if (( $# != 1 )); then
                       echo "hyprshell request: seekDelta requires one numeric seconds argument" >&2
                       exit 2
                     fi
-                    exec quickshell --path ${./quickshell} ipc call mpris seekDelta "$1"
+                    exec quickshell --path "$config_dir" ipc call mpris seekDelta "$1"
                     ;;
                   *)
                     echo "hyprshell request: unknown command: $request" >&2
@@ -86,7 +89,7 @@
                 esac
               fi
 
-              exec quickshell --path ${./quickshell} "$@"
+              exec quickshell --path "$config_dir" "$@"
             '';
           };
         in
