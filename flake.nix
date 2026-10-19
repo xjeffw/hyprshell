@@ -13,6 +13,10 @@
     git-hooks-nix.url = "github:cachix/git-hooks.nix";
     git-hooks-nix.inputs.nixpkgs.follows = "nixpkgs";
     git-hooks-nix.inputs.flake-compat.follows = "flake-compat";
+    # Quickshell fork adding AlphaModifier.opacity (alpha-modifier-v1), used
+    # to fade notifications along with the blur behind them.
+    quickshell-src.url = "github:xjeffw/quickshell/alpha-modifier";
+    quickshell-src.flake = false;
   };
 
   outputs =
@@ -34,6 +38,7 @@
         let
           overlays = [ ];
           pkgs = import inputs.nixpkgs { inherit system overlays; };
+          quickshell = pkgs.quickshell.overrideAttrs { src = inputs.quickshell-src; };
           worktreeSafeSource = builtins.path {
             path = ./.;
             name = "hyprshell-source";
@@ -41,10 +46,10 @@
           };
           hyprshell = pkgs.writeShellApplication {
             name = "hyprshell";
-            runtimeInputs = with pkgs; [
-              bash
-              coreutils
-              gawk
+            runtimeInputs = [
+              pkgs.bash
+              pkgs.coreutils
+              pkgs.gawk
               quickshell
             ];
             text = ''
@@ -143,13 +148,13 @@
                 openssl.dev
                 pkg-config
                 pre-commit
-                quickshell
                 ripgrep
                 shellcheck
                 shfmt
                 qt6.qtdeclarative
                 libnotify
               ]
+              ++ [ quickshell ]
             );
             shellHook = ''
               export PATH="$PWD/bin:$PATH"

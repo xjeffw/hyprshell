@@ -47,6 +47,11 @@ Singleton {
     readonly property color sectionBackground: Niri.available ? Qt.rgba(0, 0, 0, 0.5) : surface0
     readonly property color sectionBorder: Niri.available ? Qt.lighter(surface1, 1.4) : surface1
 
+    // Notifications are lightly tinted glass (the popup asks niri to blur
+    // behind it) bordered like the bar sections.
+    readonly property color notificationBackground: Niri.available ? Qt.rgba(0, 0, 0, 0.3) : base
+    readonly property color notificationBorder: Niri.available ? sectionBorder : surface1
+
     readonly property int barHeight: Niri.available ? 32 : 38
     readonly property int controlHeight: Niri.available ? 24 : 28
     readonly property int radius: 7
