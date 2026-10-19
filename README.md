@@ -13,8 +13,9 @@ The bar provides:
 - shared CPU, temperature, frequency, and memory statistics;
 - battery level and charging state, using UPower with a Linux sysfs fallback;
 - PipeWire output volume;
-- date and time; and
-- a notification daemon with a top-right popup and action buttons.
+- date and time;
+- a notification daemon with a top-right popup and action buttons; and
+- avizo-style volume and brightness displays.
 
 User-facing options live in `quickshell/Config.qml`. Set `transparentBar` to
 `true` to remove the bar's full-width background and bottom border; it defaults
@@ -134,3 +135,38 @@ hyprshell ipc call mpris nextTrack
 hyprshell ipc call mpris seekDelta -10
 hyprshell ipc call mpris seekDelta 10
 ```
+
+## Volume and brightness displays
+
+The `volume` IPC target raises or lowers the default output's volume by 5%
+(stopping at 100%) or toggles mute, then briefly shows a volume display on every
+screen, styled like the notification popup and placed like avizo's. Bind the
+volume keys to it in place of avizo's `volumectl`:
+
+```ini
+binde = ,XF86AudioRaiseVolume, exec, hyprshell ipc call volume up
+binde = ,XF86AudioLowerVolume, exec, hyprshell ipc call volume down
+bind = ,XF86AudioMute, exec, hyprshell ipc call volume toggleMute
+```
+
+The niri equivalents look like this:
+
+```kdl
+binds {
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "hyprshell" "ipc" "call" "volume" "up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "hyprshell" "ipc" "call" "volume" "down"; }
+    XF86AudioMute allow-when-locked=true repeat=false { spawn "hyprshell" "ipc" "call" "volume" "toggleMute"; }
+}
+```
+
+Scripts that change a monitor's brightness can show its new level, with the
+monitor's name above it, through the `brightness` target. The call prints `true`
+once the display is shown; `ipc call` exits successfully even when the target
+doesn't exist, so check for that to fall back to a notification:
+
+```sh
+hyprshell ipc call brightness changed "DELL P2715Q" 80
+```
+
+The displays' layer-shell namespace is `hyprshell-osd`; notification popups use
+`hyprshell-notification`.

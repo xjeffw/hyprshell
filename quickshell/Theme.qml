@@ -38,6 +38,7 @@ Singleton {
     readonly property color overlay0: palette.overlay0
     readonly property color surface0: palette.surface0
     readonly property color surface1: palette.surface1
+    readonly property color surface2: palette.surface2
     readonly property color mantle: palette.mantle
     readonly property color base: palette.base
 

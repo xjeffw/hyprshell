@@ -30,4 +30,6 @@ ShellRoot {
     }
 
     NotificationManager {}
+
+    Osd {}
 }

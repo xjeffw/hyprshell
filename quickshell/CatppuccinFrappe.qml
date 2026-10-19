@@ -15,6 +15,7 @@ QtObject {
     readonly property color overlay0: "#737994"
     readonly property color surface0: "#414559"
     readonly property color surface1: "#51576d"
+    readonly property color surface2: "#626880"
     readonly property color mantle: "#292c3c"
     readonly property color base: "#303446"
 }
