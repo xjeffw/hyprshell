@@ -34,6 +34,25 @@ Singleton {
         return workspace?.output === output ? window : null;
     }
 
+    // Scrolling-layout columns on either side of the workspace's active window,
+    // or null when it has no tiled active window.
+    function columnsAround(workspace) {
+        const active = workspace.active_window_id === null ? null : windows[workspace.active_window_id]?.layout?.pos_in_scrolling_layout ?? null;
+        if (active === null)
+            return null;
+        // Columns are numbered from 1 with no gaps, so the highest is the count.
+        let columns = active[0];
+        for (const window of Object.values(windows)) {
+            const position = window.layout?.pos_in_scrolling_layout;
+            if (window.workspace_id === workspace.id && position)
+                columns = Math.max(columns, position[0]);
+        }
+        return {
+            left: active[0] - 1,
+            right: columns - active[0]
+        };
+    }
+
     function focusWorkspace(id) {
         send({
             Action: {
@@ -93,6 +112,13 @@ Singleton {
             windows = Object.assign({}, windows, { [data.window.id]: data.window });
             if (data.window.is_focused)
                 focusedWindowId = data.window.id;
+        } else if (type === "WindowLayoutsChanged") {
+            const next = Object.assign({}, windows);
+            for (const [id, layout] of data.changes) {
+                if (next[id])
+                    next[id] = Object.assign({}, next[id], { layout });
+            }
+            windows = next;
         } else if (type === "WindowClosed") {
             const next = Object.assign({}, windows);
             delete next[data.id];

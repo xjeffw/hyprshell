@@ -37,14 +37,6 @@ PanelWindow {
         anchors.fill: parent
         visible: !Config.transparentBar
         color: Theme.barBackground
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            height: 1
-            color: Theme.surface1
-        }
     }
 
     RowLayout {

@@ -30,16 +30,6 @@ Scope {
     readonly property color foreground: Theme.subtext0
     property bool shown: false
 
-    // The brightness percentage, centered in the bar.
-    component PercentLabel: Text {
-        x: Math.round((parent.width - width) / 2)
-        y: Math.round((parent.height - height) / 2)
-        text: root.percent + "%"
-        font.family: Theme.monoFontFamily
-        font.pixelSize: 14
-        font.weight: Theme.monoFontWeight
-    }
-
     function show(newKind) {
         kind = newKind;
         shown = true;
@@ -165,10 +155,10 @@ Scope {
                 color: root.foreground
             }
 
-            // Centered between the title and the bar.
+            // Centered between the title and the blocks.
             BrightnessIcon {
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: Math.round((titleText.y + titleText.height + brightnessBar.y - height) / 2)
+                y: Math.round((titleText.y + titleText.height + levelBlocks.y - height) / 2)
                 visible: root.kind === "brightness"
                 level: root.percent / 100
                 color: root.foreground
@@ -177,13 +167,14 @@ Scope {
             // 20 blocks along the bottom, inside avizo's 24px padding and the
             // border, each filled per 5% up to 100%.
             Row {
+                id: levelBlocks
+
                 anchors {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
                     margins: 25
                 }
-                visible: root.kind === "volume"
                 spacing: 2
 
                 Repeater {
@@ -195,44 +186,6 @@ Scope {
                         width: 8
                         height: 10
                         color: index < Math.floor(Math.min(root.percent, 100) / 5) ? root.foreground : Theme.surface2
-                    }
-                }
-            }
-
-            // Brightness gets a solid bar in place of the blocks, filled up to
-            // 100%, with the percentage inside it.
-            Rectangle {
-                id: brightnessBar
-
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    bottom: parent.bottom
-                    margins: 25
-                }
-                visible: root.kind === "brightness"
-                height: 20
-                color: Theme.surface2
-
-                PercentLabel {
-                    color: root.foreground
-                }
-
-                // The fill: a full-width copy of the bar, with the percentage
-                // in a color that shows against it, clipped to the level.
-                Item {
-                    width: parent.width * Math.min(root.percent, 100) / 100
-                    height: parent.height
-                    clip: true
-
-                    Rectangle {
-                        width: brightnessBar.width
-                        height: brightnessBar.height
-                        color: root.foreground
-
-                        PercentLabel {
-                            color: Theme.base
-                        }
                     }
                 }
             }

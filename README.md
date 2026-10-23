@@ -18,8 +18,8 @@ The bar provides:
 - avizo-style volume and brightness displays.
 
 User-facing options live in `quickshell/Config.qml`. Set `transparentBar` to
-`true` to remove the bar's full-width background and bottom border; it defaults
-to the solid Catppuccin background.
+`true` to remove the bar's full-width background; it defaults to the solid
+Catppuccin background.
 
 ## Run it
 
